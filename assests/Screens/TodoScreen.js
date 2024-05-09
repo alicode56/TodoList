@@ -6,27 +6,34 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Entypo';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 // import {IconButton} from 'react-native-paper';
-const DummyData = [
-  {
-    id: '01',
-    title: 'wash car',
-  },
-  {
-    id: '02',
-    title: 'read a bood',
-  },
-  {
-    id: '03',
-    title: 'watching movie',
-  },
-];
+
+console.log(Date.now().toString());
 
 const TodoScreen = () => {
+  //inital local state
+  const [todo, setTodo] = useState('');
+  const [todoList, setTodoList] = useState([]);
+  //handle Add todo
+  const handleAddTodo = () => {
+    //stracture of single todo item
+    // {
+    //   id:
+    //   title:
+    // }
+    setTodoList([...todoList, {id: Date.now().toString(), title: todo}]);
+    setTodo('');
+  };
+  //handle deleteTodo
+  const handleDeleteTodo = id => {
+    const updatedTodoList = todoList.filter(todo => todo.id !== id);
+    setTodoList(updatedTodoList);
+  };
+  //render todo
   const renderTodos = ({item, index}) => {
     return (
       <View
@@ -42,11 +49,14 @@ const TodoScreen = () => {
           {item.title}
         </Text>
 
-        <Icon name="pencil" size={24} color="#fff"/>
-        <Icon name="delete" size={24} color="#fff"/>
-        {/* <IconButton icon="pencil" iconColor="#fff" />
-        <IconButton icon="delete" iconColor="#fff" /> */}
-      </View> 
+        <Icon name="pencil" size={24} color="#fff" />
+        <Icon
+          name="delete"
+          size={24}
+          color="#fff"
+          onPress={() => handleDeleteTodo(item.id)}
+        />
+      </View>
     );
   };
 
@@ -61,6 +71,8 @@ const TodoScreen = () => {
           paddingHorizontal: 12,
         }}
         placeholder="add a task"
+        value={todo}
+        onChangeText={userText => setTodo(userText)}
       />
 
       <TouchableOpacity
@@ -70,7 +82,8 @@ const TodoScreen = () => {
           paddingVertical: 8,
           alignItems: 'center',
           marginVertical: 34,
-        }}>
+        }}
+        onPress={() => handleAddTodo()}>
         <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff'}}>
           Add
         </Text>
@@ -78,7 +91,7 @@ const TodoScreen = () => {
 
       {/* Render todo list */}
 
-      <FlatList data={DummyData} renderItem={renderTodos} />
+      <FlatList data={todoList} renderItem={renderTodos} />
     </View>
   );
 };
@@ -86,5 +99,3 @@ const TodoScreen = () => {
 export default TodoScreen;
 
 const styles = StyleSheet.create({});
-
-// https://youtu.be/MZGKv-UqD4c?si=pk_q2rnsmkpyYcu7
